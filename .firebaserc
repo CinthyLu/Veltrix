@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "portafolio-mora-ramon"
-  }
+    "default": "portafolio-mora-ramon-c3d0d",
+    "Veltrix": "portafolio-mora-ramon-c3d0d",
+    "veltrix": "veltrix-6d976"
+  },
+  "targets": {},
+  "etags": {}
 }
