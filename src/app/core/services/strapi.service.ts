@@ -15,19 +15,19 @@ export class StrapiService {
   private readonly http = inject(HttpClient);
   private readonly base = environment.strapiUrl;
 
-  // ── Populate helper ──────────────────────────────────────
+  // ── Populate helper ─────
   private url(path: string, populate = '*'): string {
     return `${this.base}/${path}?populate=${populate}`;
   }
 
-  // ── Home ─────────────────────────────────────────────────
+  // ── Home ──── 
   getHome(): Observable<HomeContent> {
     return this.http
       .get<StrapiResponse<HomeContent>>(this.url('home'))
       .pipe(map((res) => res.data));
   }
 
-  // ── Programadores ────────────────────────────────────────
+  // ── Programadores ──────
   getProgramadores(): Observable<Programador[]> {
     return this.http
       .get<StrapiResponse<Programador[]>>(
@@ -44,7 +44,7 @@ export class StrapiService {
       .pipe(map((res) => res.data));
   }
 
-  // ── Proyectos ────────────────────────────────────────────
+  // ── Proyectos ────────
   getProyectos(): Observable<Proyecto[]> {
     return this.http
       .get<StrapiResponse<Proyecto[]>>(

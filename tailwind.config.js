@@ -13,6 +13,7 @@ module.exports = {
       },
       fontFamily: {
         'sans': ['Space Grotesk', 'sans-serif'],
+        'display': ['Syne', 'sans-serif'],
       }
     },
   },

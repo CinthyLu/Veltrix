@@ -1,6 +1,3 @@
-// Plantilla de ejemplo para variables de entorno locales y producción.
-// Duplique este archivo y renombrelo como 'environment.ts' o 'environment.production.ts'
-// rellenando los parámetros con sus claves reales de Firebase y Strapi.
 
 export const environment = {
   production: false,
