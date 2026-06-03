@@ -1,81 +1,17 @@
-<!-- Fondo interactivo global (Fase 1: Textura de cuadro pintado GSAP) -->
 <div class="fixed inset-0 -z-50 overflow-hidden bg-dark-bg">
   <div class="paint-texture absolute inset-0 opacity-30 mix-blend-overlay"></div>
   <div class="glow-orb orb-1 absolute -top-40 -left-40 w-96 h-96 rounded-full bg-neon-cyan/10 blur-[100px]"></div>
   <div class="glow-orb orb-2 absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-neon-teal/10 blur-[100px]"></div>
 </div>
 
-<!-- Header / Barra de Navegación Premium -->
-<header
-  class="sticky top-0 z-50 w-full border-b border-dark-surface/40 bg-dark-bg/85 backdrop-blur-md transition-all duration-300">
-  <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-    <!-- Logotipo Técnico -->
-    <a routerLink="/"
-      class="flex items-center space-x-2 font-display text-xl font-extrabold tracking-widest text-white transition-all hover:text-neon-cyan">
-      <span class="text-neon-cyan font-light">
-        <>
-      </span>
-      <span>VELTRIX</span>
-      <span
-        class="text-xs font-mono font-medium text-neon-teal border border-neon-teal/30 px-1.5 py-0.5 rounded ml-2">STUDIO</span>
-    </a>
+<app-header></app-header>
 
-    <!-- Navegación de Escritorio -->
-    <nav class="hidden md:flex items-center space-x-8 font-mono text-sm tracking-wider">
-      <a routerLink="/" routerLinkActive="text-neon-cyan border-neon-cyan" [routerLinkActiveOptions]="{exact: true}"
-        class="py-2 border-b-2 border-transparent text-gray-400 hover:text-white transition-all duration-200">
-        <> INICIO
-      </a>
-
-      @if (authService.currentUser$ | async; as user) {
-      <a routerLink="/solicitudes" routerLinkActive="text-neon-cyan border-neon-cyan"
-        class="py-2 border-b-2 border-transparent text-gray-400 hover:text-white transition-all duration-200">
-        // SOLICITUDES
-      </a>
-      <span
-        class="text-xs text-neon-teal/70 px-3 py-1 bg-dark-surface/60 rounded border border-dark-surface select-none">
-        SECURE: {{ user.email }}
-      </span>
-      <button (click)="logout()"
-        class="px-4 py-1.5 border border-red-500/30 rounded text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-200 font-mono text-xs uppercase tracking-widest">
-        CERRAR
-      </button>
-      } @else {
-      <a routerLink="/login" routerLinkActive="text-neon-cyan border-neon-cyan"
-        class="px-5 py-2 border border-neon-cyan/30 rounded-md text-neon-cyan hover:bg-neon-cyan/10 transition-all duration-200 font-mono text-xs uppercase tracking-widest">
-        ACCESO CLIENTES
-      </a>
-      }
-    </nav>
-
-    <!-- Botón Menú Móvil (Simplificado y Premium) -->
-    <div class="flex md:hidden items-center space-x-4">
-      @if (authService.currentUser$ | async; as user) {
-      <a routerLink="/solicitudes" routerLinkActive="text-neon-cyan font-bold"
-        class="text-xs text-neon-cyan border border-neon-cyan/20 px-3 py-1.5 rounded bg-dark-surface font-mono">
-        PANEL
-      </a>
-      <button (click)="logout()" class="text-xs text-red-400 font-mono px-2 py-1.5 border border-red-500/20 rounded">
-        SALIR
-      </button>
-      } @else {
-      <a routerLink="/login"
-        class="text-xs text-neon-cyan border border-neon-cyan/40 px-3 py-1.5 rounded font-mono uppercase">
-        ACCEDER
-      </a>
-      }
-    </div>
-  </div>
-</header>
-
-<!-- Contenedor Principal de Vistas -->
 <main class="min-h-[calc(100vh-140px)] w-full py-8">
   <div class="mx-auto max-w-7xl px-6">
     <router-outlet></router-outlet>
   </div>
 </main>
 
-<!-- Footer Estilizado (Anti-IA, Sin Emojis) -->
 <footer class="w-full border-t border-dark-surface/40 bg-dark-bg/60 py-6 mt-12 font-mono text-xs text-gray-500">
   <div class="mx-auto max-w-7xl px-6 flex flex-col md:flex-row items-center justify-between gap-4">
     <div class="flex items-center space-x-2">

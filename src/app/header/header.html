@@ -1,0 +1,41 @@
+<header class="sticky top-0 z-50 w-full border-b border-dark-surface/40 bg-dark-bg/85 backdrop-blur-md transition-all duration-300">
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    
+    <a routerLink="/" class="flex items-center space-x-2 font-display text-xl font-extrabold tracking-widest text-white transition-all hover:text-neon-cyan">
+      <span class="text-neon-cyan font-light"><></span>
+      <span>VELTRIX</span>
+      <span class="text-xs font-mono font-medium text-neon-teal border border-neon-teal/30 px-1.5 py-0.5 rounded ml-2">STUDIO</span>
+    </a>
+
+    <nav class="hidden md:flex items-center space-x-8 font-mono text-sm tracking-wider">
+      <a routerLink="/" routerLinkActive="text-neon-cyan border-neon-cyan" [routerLinkActiveOptions]="{exact: true}"
+         class="py-2 border-b-2 border-transparent text-gray-400 hover:text-white transition-all">INICIO</a>
+
+      @if (currentUser$ | async; as user) {
+        <a routerLink="/students" routerLinkActive="text-neon-cyan" class="text-gray-400 hover:text-white">Estudiantes</a>
+        
+        <div class="group relative py-2">
+            <span class="text-gray-400 cursor-pointer group-hover:text-white">Formularios</span>
+            <div class="absolute left-0 mt-2 w-48 bg-dark-surface border border-gray-700 rounded shadow-xl hidden group-hover:block p-2">
+                <a routerLink="/signup" class="block px-3 py-2 text-xs hover:text-neon-cyan">Signup</a>
+                <a routerLink="/profile" class="block px-3 py-2 text-xs hover:text-neon-cyan">Perfil</a>
+                <a routerLink="/projects" class="block px-3 py-2 text-xs hover:text-neon-cyan">Proyectos</a>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4 pl-4 border-l border-gray-800">
+            <span class="text-xs text-neon-teal/70 px-3 py-1 bg-dark-surface/60 rounded border border-dark-surface">
+               SECURE: {{ $any(user).email }}
+            </span>
+            <button (click)="logout()" class="px-4 py-1.5 border border-red-500/30 rounded text-red-400 hover:bg-red-500/10 text-xs uppercase">
+               Salir
+            </button>
+        </div>
+      } @else {
+        <a routerLink="/auth-page" class="px-5 py-2 border border-neon-cyan/30 rounded text-neon-cyan hover:bg-neon-cyan/10 text-xs uppercase">
+           Iniciar Sesión
+        </a>
+      }
+    </nav>
+  </div>
+</header>
