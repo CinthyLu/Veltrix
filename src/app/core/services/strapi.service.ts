@@ -1,70 +1,56 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import {
-  HomeContent,
-  Programador,
-  Proyecto,
-  Servicio,
-  StrapiResponse,
-} from '../models/models';
+import { Programador, Proyecto, Servicio, HomeContent, StrapiResponse } from '../models/models';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class StrapiService {
   private readonly http = inject(HttpClient);
-  private readonly base = environment.strapiUrl;
+  private readonly apiUrl = environment.strapiUrl;
 
-  // ── Populate helper ─────
-  private url(path: string, populate = '*'): string {
-    return `${this.base}/${path}?populate=${populate}`;
-  }
-
-  // ── Home ──── 
-  getHome(): Observable<HomeContent> {
-    return this.http
-      .get<StrapiResponse<HomeContent>>(this.url('home'))
-      .pipe(map((res) => res.data));
-  }
-
-  // ── Programadores ──────
+  /** Obtiene todos los programadores */
   getProgramadores(): Observable<Programador[]> {
     return this.http
-      .get<StrapiResponse<Programador[]>>(
-        this.url('programadors', 'foto,tecnologias,proyectos')
-      )
+      .get<StrapiResponse<Programador[]>>(`${this.apiUrl}/programadores?populate=*`)
       .pipe(map((res) => res.data));
   }
 
+  /** Obtiene un programador por su documentId */
   getProgramadorById(documentId: string): Observable<Programador> {
     return this.http
-      .get<StrapiResponse<Programador>>(
-        `${this.base}/programadors/${documentId}?populate=foto,tecnologias,proyectos.imagen,proyectos.tecnologias`
-      )
+      .get<StrapiResponse<Programador>>(`${this.apiUrl}/programadores/${documentId}?populate=*`)
       .pipe(map((res) => res.data));
   }
 
-  // ── Proyectos ────────
+  /** Obtiene todos los proyectos */
   getProyectos(): Observable<Proyecto[]> {
     return this.http
-      .get<StrapiResponse<Proyecto[]>>(
-        this.url('proyectos', 'imagen,tecnologias,programadores')
-      )
+      .get<StrapiResponse<Proyecto[]>>(`${this.apiUrl}/proyectos?populate=*`)
       .pipe(map((res) => res.data));
   }
 
+  /** Obtiene los proyectos destacados */
   getProyectosDestacados(): Observable<Proyecto[]> {
     return this.http
-      .get<StrapiResponse<Proyecto[]>>(
-        `${this.base}/proyectos?filters[destacado][$eq]=true&populate=imagen,tecnologias,programadores`
-      )
+      .get<StrapiResponse<Proyecto[]>>(`${this.apiUrl}/proyectos?filters[destacado][$eq]=true&populate=*`)
       .pipe(map((res) => res.data));
   }
 
-  // ── Servicios ────────────────────────────────────────────
+  /** Obtiene todos los servicios */
   getServicios(): Observable<Servicio[]> {
     return this.http
-      .get<StrapiResponse<Servicio[]>>(this.url('servicios'))
+      .get<StrapiResponse<Servicio[]>>(`${this.apiUrl}/servicios?populate=*`)
+      .pipe(map((res) => res.data));
+  }
+
+  /** Obtiene el contenido de la página de inicio (Home) */
+  getHome(): Observable<HomeContent> {
+    return this.http
+      .get<StrapiResponse<HomeContent>>(`${this.apiUrl}/home?populate=*`)
       .pipe(map((res) => res.data));
   }
 }
