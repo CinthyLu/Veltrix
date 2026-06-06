@@ -12,14 +12,14 @@
          class="py-2 border-b-2 border-transparent text-gray-400 hover:text-white transition-all">INICIO</a>
 
       @if (currentUser$ | async; as user) {
-        <a routerLink="/students" routerLinkActive="text-neon-cyan" class="text-gray-400 hover:text-white">Estudiantes</a>
+        <a routerLink="/solicitudes" routerLinkActive="text-neon-cyan" class="text-gray-400 hover:text-white">Solicitudes</a>
         
         <div class="group relative py-2">
             <span class="text-gray-400 cursor-pointer group-hover:text-white">Formularios</span>
             <div class="absolute left-0 mt-2 w-48 bg-dark-surface border border-gray-700 rounded shadow-xl hidden group-hover:block p-2">
-                <a routerLink="/signup" class="block px-3 py-2 text-xs hover:text-neon-cyan">Signup</a>
-                <a routerLink="/profile" class="block px-3 py-2 text-xs hover:text-neon-cyan">Perfil</a>
-                <a routerLink="/projects" class="block px-3 py-2 text-xs hover:text-neon-cyan">Proyectos</a>
+                <a routerLink="/programador/1" routerLinkActive="text-neon-cyan" class="block px-3 py-2 text-xs hover:text-neon-cyan">Mi Perfil</a>
+                
+                <span class="block px-3 py-2 text-xs text-gray-600 cursor-not-allowed">Próximamente</span>
             </div>
         </div>
 
@@ -32,7 +32,7 @@
             </button>
         </div>
       } @else {
-        <a routerLink="/auth-page" class="px-5 py-2 border border-neon-cyan/30 rounded text-neon-cyan hover:bg-neon-cyan/10 text-xs uppercase">
+        <a routerLink="/login" routerLinkActive="text-neon-cyan" class="px-5 py-2 border border-neon-cyan/30 rounded text-neon-cyan hover:bg-neon-cyan/10 text-xs uppercase">
            Iniciar Sesión
         </a>
       }
