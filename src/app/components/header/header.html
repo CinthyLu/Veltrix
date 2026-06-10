@@ -16,26 +16,28 @@
 
       <a routerLink="/proyectos" routerLinkActive="text-neon-cyan border-neon-cyan"
          class="py-2 border-b-2 border-transparent text-gray-400 hover:text-white transition-all">PROYECTOS</a>
-      @if (currentUser$ | async; as user) {
-        <a routerLink="/solicitudes" routerLinkActive="text-neon-cyan" class="text-gray-400 hover:text-white">Solicitudes</a>
-        
-        <div class="group relative py-2">
-            <span class="text-gray-400 cursor-pointer group-hover:text-white">Formularios</span>
-            <div class="absolute left-0 mt-2 w-48 bg-dark-surface border border-gray-700 rounded shadow-xl hidden group-hover:block p-2">
-                <a routerLink="/programador/1" routerLinkActive="text-neon-cyan" class="block px-3 py-2 text-xs hover:text-neon-cyan">Mi Perfil</a>
-                
-                <span class="block px-3 py-2 text-xs text-gray-600 cursor-not-allowed">Próximamente</span>
-            </div>
-        </div>
 
-        <div class="flex items-center gap-4 pl-4 border-l border-gray-800">
-            <span class="text-xs text-neon-teal/70 px-3 py-1 bg-dark-surface/60 rounded border border-dark-surface">
-               SECURE: {{ $any(user).email }}
-            </span>
-            <button (click)="logout()" class="px-4 py-1.5 border border-red-500/30 rounded text-red-400 hover:bg-red-500/10 text-xs uppercase">
-               Salir
-            </button>
-        </div>
+      @if (currentUser$ | async; as user) {
+        
+        <a [routerLink]="user.isProgrammer ? '/programador/1' : '/proyectos'" 
+           class="text-neon-cyan font-bold hover:text-white transition-all cursor-pointer">
+           {{ user.name }}
+        </a>
+
+        @if (user.isProgrammer) {
+          <a routerLink="/solicitudes" class="text-gray-400 hover:text-white border-l border-gray-800 pl-8">
+            Mis Solicitudes
+          </a>
+        } @else {
+          <a routerLink="/consultoria" class="text-gray-400 hover:text-white border-l border-gray-800 pl-8">
+            Consultoría
+          </a>
+        }
+
+        <button (click)="logout()" class="px-4 py-1.5 border border-red-500/30 rounded text-red-400 hover:bg-red-500/10 text-xs uppercase">
+          Salir
+        </button>
+
       } @else {
         <a routerLink="/login" routerLinkActive="text-neon-cyan" class="px-5 py-2 border border-neon-cyan/30 rounded text-neon-cyan hover:bg-neon-cyan/10 text-xs uppercase">
             Iniciar Sesión

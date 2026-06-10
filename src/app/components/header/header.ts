@@ -5,9 +5,11 @@ import { AuthService } from '../../core/services/auth.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-// 1. Interfaz ajustada para aceptar string o null
+// Ampliamos la interfaz para incluir el rol y el nombre
 interface UserDisplay {
-  email: string | null; 
+  name: string;
+  email: string | null;
+  isProgrammer: boolean;
 }
 
 @Component({
@@ -19,14 +21,21 @@ interface UserDisplay {
 export class Header {
   private authService = inject(AuthService);
 
-  // 2. Observable tipado correctamente usando la interfaz
   currentUser$: Observable<UserDisplay | null> = this.authService.currentUser$.pipe(
-    map(user => user ? { email: user.email } : null)
+    map((user: any) => { // 'any' temporal para acceder a propiedades de Firebase
+      if (!user) return null;
+      
+      return {
+        // Usamos displayName si existe, sino el email
+        name: user.displayName || user.email?.split('@')[0] || 'Usuario',
+        email: user.email,
+        // Ajusta 'user.role' según cómo guardes el rol en tu objeto usuario
+        isProgrammer: user.role === 'programador' 
+      };
+    })
   );
 
   logout() {
-    // Si tu logout devuelve un observable (ej. Firebase), recuerda suscribirte
-    // this.authService.logout().subscribe();
-    this.authService.logout(); 
+    this.authService.logout();
   }
 }
