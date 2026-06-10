@@ -59,7 +59,7 @@ export class SolicitudesService {
       programadorId: solicitud.programadorId ?? '',
       programadorNombre: solicitud.programadorNombre ?? '',
       estado: (solicitud.estado ?? 'Pendiente') as EstadoSolicitud,
-      observacion: solicitud.observacion,
+      observacion: solicitud.observacion ?? '',
       createdAt,
       updatedAt: createdAt,
     };

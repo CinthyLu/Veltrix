@@ -123,4 +123,32 @@ export class StrapiService {
       .put<StrapiResponse<any>>(`${this.apiUrl}/solicitudes/${documentId}`, payload)
       .pipe(map((res) => res.data));
   }
+
+  /** Sube una imagen a la biblioteca de medios de Strapi */
+  uploadImage(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('files', file);
+    return this.http.post<any>(`${this.apiUrl}/upload`, formData);
+  }
+
+  /** Crea un nuevo proyecto en Strapi y lo publica de inmediato */
+  crearProyecto(proyectoData: any): Observable<any> {
+    const payload = {
+      data: {
+        Project_Name: proyectoData.Project_Name,
+        Identifier: proyectoData.Identifier,
+        Short_description: proyectoData.Short_description,
+        Full_description: proyectoData.Full_description || '',
+        tipo_de_proyecto: proyectoData.tipo_de_proyecto,
+        Technologies_used: proyectoData.Technologies_used,
+        Link_repository: proyectoData.Link_repository,
+        Link_demo: proyectoData.Link_demo || null,
+        Featured: proyectoData.Featured || false,
+        programmers: proyectoData.programmers || [], // array de documentIds
+        Main_image: proyectoData.Main_image || null, // ID numérico de la imagen
+        publishedAt: new Date().toISOString() // Publicar inmediatamente
+      }
+    };
+    return this.http.post<any>(`${this.apiUrl}/projects`, payload);
+  }
 }
