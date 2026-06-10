@@ -1,1 +1,162 @@
-<p>profile works!</p>
+<div class="space-y-12 pb-16 font-mono text-xs selection:bg-neon-cyan/30 selection:text-white">
+  
+  <!-- Cabecera de Navegación (Breadcrumbs Cyber) -->
+  <div class="border-b border-dark-surface/40 pb-4">
+    <a routerLink="/" class="text-neon-cyan hover:text-neon-teal transition-colors duration-200 font-bold tracking-widest">
+      [ &lt;- VOLVER AL PANEL GENERAL ]
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="p-12 text-center border border-dark-surface/40 bg-dark-surface/20 rounded-lg animate-pulse">
+      <div class="text-neon-cyan text-sm tracking-widest uppercase mb-2">LOADING PROFILE DATA...</div>
+      <div class="text-[10px] text-gray-500 uppercase">Consultando datos del programador en Strapi CMS</div>
+    </div>
+  } @else if (programmer(); as prog) {
+    <!-- Contenedor Principal Asimétrico -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Ficha Técnica Lateral (Perfil e Info) -->
+      <div class="lg:col-span-4 bg-dark-surface/25 border border-dark-surface/60 rounded-lg p-6 space-y-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[2px] bg-neon-teal"></div>
+        
+        <!-- Foto de Perfil -->
+        <div class="w-full h-48 rounded border border-dark-surface bg-dark-bg overflow-hidden relative group">
+          @if (prog.Profile_picture?.url) {
+            <img 
+              [src]="prog.Profile_picture.url.startsWith('/') ? 'https://upbeat-chickens-1ee0436960.strapiapp.com' + prog.Profile_picture.url : prog.Profile_picture.url" 
+              alt="Foto de {{ prog.Full_name }}"
+              class="w-full h-full object-cover"
+            />
+          } @else {
+            <div class="w-full h-full flex items-center justify-center bg-dark-surface text-neon-teal text-3xl font-bold font-display">
+              {{ prog.Full_name.substring(0, 2) | uppercase }}
+            </div>
+          }
+          <div class="absolute bottom-2 right-2 px-2 py-0.5 border border-neon-cyan/30 rounded bg-dark-bg/90 text-neon-cyan text-[8px] uppercase tracking-widest font-bold">
+            STATUS: ACTIVE
+          </div>
+        </div>
+
+        <!-- Detalles Principales -->
+        <div class="space-y-4">
+          <div>
+            <h1 class="text-2xl font-display font-extrabold text-white uppercase tracking-tight">{{ prog.Full_name }}</h1>
+            <p class="text-xs text-neon-cyan tracking-widest uppercase mt-1 font-bold">// {{ prog.Specialty }}</p>
+          </div>
+
+          <div class="border-t border-dark-surface/40 pt-4 space-y-2 text-[10px]">
+            <p class="text-gray-400"><span class="text-gray-600 mr-2">EMAIL:</span> {{ prog.Contact_Email }}</p>
+            @if (prog.Links) {
+              <p class="text-gray-400"><span class="text-gray-600 mr-2">ENLACES:</span> {{ prog.Links }}</p>
+            }
+          </div>
+        </div>
+
+        <!-- CTA Directo a Solicitudes -->
+        <a [routerLink]="['/solicitudes']" [queryParams]="{ progId: prog.documentId }"
+           class="w-full block text-center py-3 bg-neon-cyan/10 hover:bg-neon-cyan/20 border border-neon-cyan/30 text-neon-cyan font-bold tracking-widest uppercase transition-all duration-300 rounded shadow-[0_0_15px_rgba(102,252,241,0.05)]">
+          [ CONTRATAR PROGRAMADOR ]
+        </a>
+      </div>
+
+      <!-- Sección de Contenido Principal (Bio y Proyectos) -->
+      <div class="lg:col-span-8 space-y-12">
+        <!-- Biografía / Perfil Técnico -->
+        <div class="space-y-4">
+          <h2 class="text-sm font-bold tracking-widest text-white uppercase border-b border-dark-surface/30 pb-2">
+            // DESCRIPCIÓN TÉCNICA
+          </h2>
+          <p class="text-xs md:text-sm text-gray-400 font-sans leading-relaxed whitespace-pre-line">
+            {{ prog.Full_description }}
+          </p>
+        </div>
+
+        <!-- Proyectos Asociados -->
+        <div class="space-y-6">
+          <h2 class="text-sm font-bold tracking-widest text-white uppercase border-b border-dark-surface/30 pb-2">
+            // PORTAFOLIO DE PROYECTOS
+          </h2>
+
+          @if (!prog.projects || prog.projects.length === 0) {
+            <div class="p-8 border border-dashed border-dark-surface rounded text-center">
+              <p class="text-gray-500 uppercase tracking-widest">No hay proyectos asociados a este perfil en el CMS.</p>
+            </div>
+          } @else {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              @for (proj of prog.projects; track proj.id) {
+                <div class="bg-dark-surface/10 border border-dark-surface/60 rounded overflow-hidden flex flex-col hover:border-neon-teal/40 transition-all duration-300 group">
+                  
+                  <!-- Imagen de Portada del Proyecto -->
+                  <div class="h-40 bg-dark-bg relative overflow-hidden border-b border-dark-surface/40">
+                    @if (proj.Main_image?.url) {
+                      <img 
+                        [src]="proj.Main_image.url.startsWith('/') ? 'https://upbeat-chickens-1ee0436960.strapiapp.com' + proj.Main_image.url : proj.Main_image.url" 
+                        alt="Imagen de {{ proj.Project_Name }}"
+                        class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+                      />
+                    } @else {
+                      <div class="w-full h-full flex items-center justify-center bg-dark-surface/20 text-gray-700 text-[10px] uppercase tracking-widest">
+                        // SIN RECURSO GRÁFICO
+                      </div>
+                    }
+                    <span class="absolute top-2 right-2 px-2 py-0.5 border border-neon-teal/50 rounded bg-dark-bg/90 text-neon-teal text-[8px] uppercase tracking-widest font-bold">
+                      {{ proj.tipo_de_proyecto }}
+                    </span>
+                  </div>
+
+                  <!-- Datos -->
+                  <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                    <div class="space-y-2">
+                      <h3 class="text-sm font-bold tracking-widest text-white uppercase group-hover:text-neon-cyan transition-colors duration-200">
+                        {{ proj.Project_Name }}
+                      </h3>
+                      <p class="text-[11px] text-gray-400 font-sans leading-relaxed">
+                        {{ proj.Short_description }}
+                      </p>
+                    </div>
+
+                    <div class="space-y-3 pt-2">
+                      <!-- Tecnologías usadas -->
+                      @if (proj.Technologies_used) {
+                        <div class="flex flex-wrap gap-1">
+                          @for (tech of proj.Technologies_used.split(','); track tech) {
+                            <span class="px-2 py-0.5 border border-dark-surface rounded text-[8px] text-gray-500 bg-dark-bg/30 uppercase tracking-wider font-mono">
+                              {{ tech.trim() }}
+                            </span>
+                          }
+                        </div>
+                      }
+
+                      <!-- Enlaces -->
+                      <div class="flex items-center space-x-4 text-[9px] font-mono tracking-widest uppercase border-t border-dark-surface/30 pt-3">
+                        @if (proj.Link_repository) {
+                          <a [href]="proj.Link_repository" target="_blank" class="hover:text-neon-cyan transition-colors duration-200 text-gray-400 font-bold">
+                            [ REPO ]
+                          </a>
+                        }
+                        @if (proj.Link_demo) {
+                          <a [href]="proj.Link_demo" target="_blank" class="hover:text-neon-cyan transition-colors duration-200 text-neon-teal font-bold">
+                            [ DEMO ]
+                          </a>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+      </div>
+
+    </div>
+  } @else {
+    <div class="p-12 text-center border border-dashed border-red-500/30 rounded-lg">
+      <p class="text-red-400 uppercase tracking-widest font-bold">Error: El programador solicitado no se encuentra en el sistema.</p>
+    </div>
+  }
+
+</div>

@@ -40,6 +40,23 @@
 
     <!-- Formulario Reactivo -->
     <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Campo Nombre (Solo para Registro) -->
+      @if (mode() === 'registro') {
+        <div class="space-y-2 font-mono">
+          <label for="nombre" class="text-xs text-gray-400 tracking-wider block">// NOMBRE COMPLETO / EMPRESA</label>
+          <input 
+            id="nombre" 
+            type="text" 
+            formControlName="nombre"
+            placeholder="EJ. CORPORACIÓN ALPHA"
+            class="w-full bg-dark-bg/90 border border-dark-surface/80 rounded px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-neon-cyan/50 focus:ring-1 focus:ring-neon-cyan/30 transition-all font-mono"
+          />
+          @if (authForm.get('nombre')?.touched && authForm.get('nombre')?.invalid) {
+            <p class="text-[10px] text-red-400 tracking-wide mt-1 uppercase">* EL NOMBRE ES REQUERIDO (MÍNIMO 3 CARACTERES).</p>
+          }
+        </div>
+      }
+
       <!-- Campo Email -->
       <div class="space-y-2 font-mono">
         <label for="email" class="text-xs text-gray-400 tracking-wider block">// DIRECCIÓN DE EMAIL</label>

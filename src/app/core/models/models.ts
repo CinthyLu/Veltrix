@@ -36,9 +36,8 @@ export interface Tecnologia {
 export interface Servicio {
   id: number;
   documentId: string;
-  nombre: string;
-  descripcion: string;
-  icono?: string;
+  service_name: string;
+  description: string;
 }
 
 // ─────────────────────────────────────────────
@@ -47,13 +46,16 @@ export interface Servicio {
 export interface Proyecto {
   id: number;
   documentId: string;
-  nombre: string;
-  descripcion: string;
-  imagen?: string;
-  url?: string;
-  destacado: boolean;
-  tecnologias?: Tecnologia[];
-  programadores?: Programador[];
+  Project_Name: string;
+  Short_description: string;
+  Full_description?: string;
+  Main_image?: any;
+  tipo_de_proyecto: 'academico' | 'personal' | 'laboral' | 'simulado';
+  Technologies_used: string;
+  Link_repository: string;
+  Link_demo?: string;
+  Featured: boolean;
+  programmers?: Programador[];
 }
 
 // ─────────────────────────────────────────────
@@ -62,14 +64,17 @@ export interface Proyecto {
 export interface Programador {
   id: number;
   documentId: string;
-  nombre: string;
-  apellido: string;
-  email: string;
-  foto?: string;
-  bio?: string;
-  especialidad?: string;
+  Full_name: string;
+  Specialty: string;
+  Short_description: string;
+  Full_description: string;
+  Contact_Email: string;
+  Profile_picture?: any;
+  Active_status: boolean;
+  Identifier: string;
+  Links?: string;
   tecnologias?: Tecnologia[];
-  proyectos?: Proyecto[];
+  projects?: Proyecto[];
 }
 
 // ─────────────────────────────────────────────

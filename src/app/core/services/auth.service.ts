@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   signOut,
   user,
+  updateProfile,
 } from '@angular/fire/auth';
 import { from, Observable } from 'rxjs';
 
@@ -14,12 +15,19 @@ import { from, Observable } from 'rxjs';
 export class AuthService {
   private readonly auth = inject(Auth);
 
-  /** Observable del usuario actual (null si no autenticado) */
+  /** usuario actual (null si no autenticado) */
   readonly currentUser$ = user(this.auth);
 
-  /** Registra un nuevo usuario externo con email y contraseña */
-  register(email: string, password: string) {
-    return from(createUserWithEmailAndPassword(this.auth, email, password));
+  /** Registra un nuevo usuario externo con nombre, email y contraseña */
+  register(nombre: string, email: string, password: string) {
+    return from(
+      createUserWithEmailAndPassword(this.auth, email, password).then(
+        async (credential) => {
+          await updateProfile(credential.user, { displayName: nombre });
+          return credential;
+        }
+      )
+    );
   }
 
   /** Inicia sesión con email y contraseña */

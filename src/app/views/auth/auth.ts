@@ -21,6 +21,7 @@ export class Auth {
 
   // Formulario reactivo
   authForm = this.fb.nonNullable.group({
+    nombre: [''],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
@@ -29,6 +30,14 @@ export class Auth {
     this.mode.set(newMode);
     this.errorMessage.set(null);
     this.authForm.reset();
+
+    const nombreControl = this.authForm.get('nombre');
+    if (newMode === 'registro') {
+      nombreControl?.setValidators([Validators.required, Validators.minLength(3)]);
+    } else {
+      nombreControl?.clearValidators();
+    }
+    nombreControl?.updateValueAndValidity();
   }
 
   onSubmit() {
@@ -37,7 +46,7 @@ export class Auth {
     this.loading.set(true);
     this.errorMessage.set(null);
 
-    const { email, password } = this.authForm.getRawValue();
+    const { nombre, email, password } = this.authForm.getRawValue();
 
     if (this.mode() === 'login') {
       this.authService.login(email, password).subscribe({
@@ -51,7 +60,7 @@ export class Auth {
         },
       });
     } else {
-      this.authService.register(email, password).subscribe({
+      this.authService.register(nombre, email, password).subscribe({
         next: () => {
           this.loading.set(false);
           this.router.navigate(['/solicitudes']);

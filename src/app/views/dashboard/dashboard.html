@@ -79,36 +79,66 @@
           }
         </div>
 
-        <!-- Formulario Rápido de Solicitud (Fase 6: Simulación) -->
+        <!-- Formulario Rápido de Solicitud (Fase 6: Conectado a Strapi) -->
         <div class="lg:col-span-4 bg-dark-surface/30 border border-dark-surface/60 rounded-lg p-6 h-fit space-y-6">
           <div class="border-b border-dark-surface/40 pb-3">
             <h3 class="text-sm font-bold tracking-widest text-white uppercase">// NUEVA SOLICITUD</h3>
             <p class="text-[10px] text-gray-500 mt-1 uppercase">Enviar propuesta técnica directa</p>
           </div>
 
-          <form class="space-y-4 text-xs">
+          <form [formGroup]="solicitudForm" (ngSubmit)="onEnviarSolicitud()" class="space-y-4 text-xs">
             <div class="space-y-2">
-              <label class="text-[10px] text-gray-400 uppercase tracking-wider block">Programador Asignado</label>
-              <select class="w-full bg-dark-bg border border-dark-surface rounded p-2.5 text-white font-mono focus:outline-none focus:border-neon-cyan/50">
+              <label for="programadorId" class="text-[10px] text-gray-400 uppercase tracking-wider block">Programador Asignado</label>
+              <select 
+                id="programadorId"
+                formControlName="programadorId" 
+                class="w-full bg-dark-bg border border-dark-surface rounded p-2.5 text-white font-mono focus:outline-none focus:border-neon-cyan/50"
+              >
+                <option value="" disabled selected>-- SELECCIONAR PROGRAMADOR --</option>
                 @for (prog of programmersList(); track prog.id) {
-                  <option [value]="prog.documentId">{{ prog.nombre }} {{ prog.apellido }}</option>
+                  <option [value]="prog.documentId">{{ prog.Full_name }}</option>
                 } @empty {
-                  <option>CONSULTANDO PROGRAMADORES...</option>
+                  <option disabled>CONSULTANDO PROGRAMADORES...</option>
                 }
               </select>
+              @if (solicitudForm.get('programadorId')?.touched && solicitudForm.get('programadorId')?.invalid) {
+                <p class="text-[9px] text-red-400 uppercase tracking-wider">* DEBE SELECCIONAR UN PROGRAMADOR.</p>
+              }
             </div>
 
             <div class="space-y-2">
-              <label class="text-[10px] text-gray-400 uppercase tracking-wider block">Tu Nombre / Empresa</label>
-              <input type="text" placeholder="EJ. CORPORACIÓN ALPHA" class="w-full bg-dark-bg border border-dark-surface rounded p-2.5 text-white placeholder-gray-700 font-mono focus:outline-none focus:border-neon-cyan/50" />
+              <label for="nombreSolicitante" class="text-[10px] text-gray-400 uppercase tracking-wider block">Tu Nombre / Empresa</label>
+              <input 
+                id="nombreSolicitante"
+                type="text" 
+                formControlName="nombreSolicitante"
+                placeholder="EJ. CORPORACIÓN ALPHA" 
+                class="w-full bg-dark-bg border border-dark-surface rounded p-2.5 text-white placeholder-gray-700 font-mono focus:outline-none focus:border-neon-cyan/50" 
+              />
+              @if (solicitudForm.get('nombreSolicitante')?.touched && solicitudForm.get('nombreSolicitante')?.invalid) {
+                <p class="text-[9px] text-red-400 uppercase tracking-wider">* INGRESE EL NOMBRE (MÍNIMO 3 CARACTERES).</p>
+              }
             </div>
 
             <div class="space-y-2">
-              <label class="text-[10px] text-gray-400 uppercase tracking-wider block">Descripción Detallada del Proyecto</label>
-              <textarea rows="4" placeholder="EJ. REQUIERO EL DESARROLLO DE..." class="w-full bg-dark-bg border border-dark-surface rounded p-2.5 text-white placeholder-gray-700 font-mono focus:outline-none focus:border-neon-cyan/50 resize-none"></textarea>
+              <label for="descripcionProyecto" class="text-[10px] text-gray-400 uppercase tracking-wider block">Descripción Detallada del Proyecto</label>
+              <textarea 
+                id="descripcionProyecto"
+                rows="4" 
+                formControlName="descripcionProyecto"
+                placeholder="EJ. REQUIERO EL DESARROLLO DE..." 
+                class="w-full bg-dark-bg border border-dark-surface rounded p-2.5 text-white placeholder-gray-700 font-mono focus:outline-none focus:border-neon-cyan/50 resize-none"
+              ></textarea>
+              @if (solicitudForm.get('descripcionProyecto')?.touched && solicitudForm.get('descripcionProyecto')?.invalid) {
+                <p class="text-[9px] text-red-400 uppercase tracking-wider">* INGRESE UNA DESCRIPCIÓN DETALLADA (MÍNIMO 10 CARACTERES).</p>
+              }
             </div>
 
-            <button type="button" class="w-full py-2.5 bg-neon-cyan/10 hover:bg-neon-cyan/20 border border-neon-cyan/30 text-neon-cyan font-bold tracking-widest uppercase rounded transition-all duration-200">
+            <button 
+              type="submit" 
+              [disabled]="solicitudForm.invalid"
+              class="w-full py-2.5 bg-neon-cyan/10 hover:bg-neon-cyan/20 border border-neon-cyan/30 text-neon-cyan font-bold tracking-widest uppercase rounded transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
               ENVIAR PROPUESTA
             </button>
           </form>
