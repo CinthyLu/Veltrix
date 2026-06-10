@@ -2,14 +2,16 @@ import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { StrapiService } from '../../core/services/strapi.service';
+import { map, switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
-// Ampliamos la interfaz para incluir el rol y el nombre
+// Ampliamos la interfaz para incluir el rol, el nombre y el ID
 interface UserDisplay {
   name: string;
   email: string | null;
   isProgrammer: boolean;
+  programmerId?: string;
 }
 
 @Component({
@@ -20,18 +22,25 @@ interface UserDisplay {
 })
 export class Header {
   private authService = inject(AuthService);
+  private strapiService = inject(StrapiService);
 
   currentUser$: Observable<UserDisplay | null> = this.authService.currentUser$.pipe(
-    map((user: any) => { // 'any' temporal para acceder a propiedades de Firebase
-      if (!user) return null;
+    switchMap((user) => {
+      if (!user) return of(null);
       
-      return {
-        // Usamos displayName si existe, sino el email
-        name: user.displayName || user.email?.split('@')[0] || 'Usuario',
-        email: user.email,
-        // Ajusta 'user.role' según cómo guardes el rol en tu objeto usuario
-        isProgrammer: user.role === 'programador' 
-      };
+      return this.strapiService.getProgramadores().pipe(
+        map((programmers) => {
+          const matchingProg = programmers.find(
+            (p) => p.Contact_Email.toLowerCase() === user.email?.toLowerCase()
+          );
+          return {
+            name: user.displayName || user.email?.split('@')[0] || 'Usuario',
+            email: user.email,
+            isProgrammer: !!matchingProg,
+            programmerId: matchingProg?.documentId,
+          };
+        })
+      );
     })
   );
 

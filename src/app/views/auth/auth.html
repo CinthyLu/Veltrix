@@ -15,14 +15,14 @@
 
     <!-- Toggles de Pestañas (Modo Login / Modo Registro) -->
     <div class="grid grid-cols-2 gap-2 mb-8 p-1 bg-dark-bg/80 border border-dark-surface/60 rounded-md font-mono text-xs">
-      <button (click)="setMode('login')"
+      <button type="button" (click)="setMode('login')"
               [class.bg-dark-surface]="mode() === 'login'"
               [class.text-neon-cyan]="mode() === 'login'"
               [class.text-gray-400]="mode() !== 'login'"
               class="py-2.5 rounded font-medium transition-all duration-200 tracking-wider text-center uppercase">
         [ INICIAR SESIÓN ]
       </button>
-      <button (click)="setMode('registro')"
+      <button type="button" (click)="setMode('registro')"
               [class.bg-dark-surface]="mode() === 'registro'"
               [class.text-neon-cyan]="mode() === 'registro'"
               [class.text-gray-400]="mode() !== 'registro'"
@@ -120,5 +120,20 @@
       </svg>
       <span>AUTENTICAR CON GOOGLE</span>
     </button>
+
+    <!-- Enlace alternativo para cambiar de modo -->
+    <div class="text-center mt-6 font-mono text-[10px]">
+      @if (mode() === 'login') {
+        <span class="text-gray-500">¿NO TIENE UNA CUENTA?</span>
+        <button type="button" (click)="setMode('registro')" class="text-neon-cyan hover:underline ml-1 font-bold">
+          [ REGÍSTRESE AQUÍ ]
+        </button>
+      } @else {
+        <span class="text-gray-500">¿YA TIENE UNA CUENTA?</span>
+        <button type="button" (click)="setMode('login')" class="text-neon-cyan hover:underline ml-1 font-bold">
+          [ INICIE SESIÓN ]
+        </button>
+      }
+    </div>
   </div>
 </div>

@@ -95,7 +95,7 @@ export interface HomeContent {
 export type EstadoSolicitud = 'Pendiente' | 'Respondida';
 
 export interface Solicitud {
-  id?: string;
+    id?: string;
   uid: string;
   correoUsuario: string;
   nombreSolicitante: string;
@@ -103,7 +103,10 @@ export interface Solicitud {
   descripcionProyecto: string;
   programadorId: string;
   programadorNombre: string;
-  fechaCreacion: Date | null;
+  fechaCreacion: Date | string | null;
   estado: EstadoSolicitud;
   observacion?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
+

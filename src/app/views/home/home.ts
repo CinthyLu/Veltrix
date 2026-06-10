@@ -1,7 +1,9 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { UpperCasePipe } from '@angular/common';
+import { forkJoin } from 'rxjs';
 import { StrapiService } from '../../core/services/strapi.service';
+import { SeoService } from '../../core/services/seo.service';
 import { Programador, Proyecto, Servicio } from '../../core/models/models';
 
 @Component({
@@ -9,9 +11,11 @@ import { Programador, Proyecto, Servicio } from '../../core/models/models';
   imports: [RouterLink, UpperCasePipe],
   templateUrl: './home.html',
   styleUrl: './home.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class Home implements OnInit {
   private readonly strapiService = inject(StrapiService);
+  private readonly seoService = inject(SeoService);
 
   programmers = signal<Programador[]>([]);
   services = signal<Servicio[]>([]);
@@ -19,34 +23,32 @@ export class Home implements OnInit {
   loading = signal<boolean>(true);
 
   ngOnInit() {
+    this.seoService.generateTags({
+      title: 'Veltrix Studio - Desarrollo de Software Premium',
+      description: 'Creamos soluciones de software asimétricas y de autor con alto rendimiento y diseño cyber-dark.',
+      route: '/'
+    });
     this.loadHomeData();
   }
 
   private loadHomeData() {
     this.loading.set(true);
 
-    // 1. Cargar Programadores
-    this.strapiService.getProgramadores().subscribe({
-      next: (progs) => this.programmers.set(progs),
-      error: (err) => console.error('Error al cargar programadores:', err)
-    });
-
-    // 2. Cargar Servicios
-    this.strapiService.getServicios().subscribe({
-      next: (servs) => this.services.set(servs),
-      error: (err) => console.error('Error al cargar servicios:', err)
-    });
-
-    // 3. Cargar Proyectos Destacados
-    this.strapiService.getProyectosDestacados().subscribe({
-      next: (projs) => {
-        this.featuredProjects.set(projs);
+    forkJoin({
+      programmers: this.strapiService.getProgramadores(),
+      services: this.strapiService.getServicios(),
+      projects: this.strapiService.getProyectosDestacados(),
+    }).subscribe({
+      next: ({ programmers, services, projects }) => {
+        this.programmers.set(programmers);
+        this.services.set(services);
+        this.featuredProjects.set(projects);
         this.loading.set(false);
       },
       error: (err) => {
-        console.error('Error al cargar proyectos destacados:', err);
+        console.error('Error al cargar datos de inicio:', err);
         this.loading.set(false);
-      }
+      },
     });
   }
 }

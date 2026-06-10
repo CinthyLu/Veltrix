@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { StrapiService } from '../../core/services/strapi.service';
+import { SolicitudesService } from '../../core/services/solicitudes.service';
 import { Programador, Solicitud } from '../../core/models/models';
 
 @Component({
@@ -15,6 +16,7 @@ import { Programador, Solicitud } from '../../core/models/models';
 export class Dashboard implements OnInit {
   protected readonly authService = inject(AuthService);
   private readonly strapiService = inject(StrapiService);
+  private readonly solicitudesService = inject(SolicitudesService);
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
 
@@ -30,6 +32,8 @@ export class Dashboard implements OnInit {
   // Datos del usuario logueado
   currentUserEmail: string | null = null;
   currentUserUid: string | null = null;
+  currentUserName: string | null = null;
+  currentProgrammerId: string | null = null;
 
   // Formulario reactivo para enviar propuesta
   solicitudForm = this.fb.nonNullable.group({
@@ -75,7 +79,9 @@ export class Dashboard implements OnInit {
           });
 
           // Si el correo electrónico coincide con algún programador de Strapi, habilitar vista de Programador
-          const isProg = programmers.some(p => p.Contact_Email.toLowerCase() === user.email?.toLowerCase());
+          const matchedProgrammer = programmers.find(p => p.Contact_Email.toLowerCase() === user.email?.toLowerCase());
+          const isProg = Boolean(matchedProgrammer);
+          this.currentProgrammerId = matchedProgrammer?.documentId ?? null;
           this.isProgrammer.set(isProg);
 
           // Cargar solicitudes correspondientes
@@ -92,8 +98,8 @@ export class Dashboard implements OnInit {
 
   cargarSolicitudes() {
     this.loading.set(true);
-    if (this.isProgrammer() && this.currentUserEmail) {
-      this.strapiService.getSolicitudesDeProgramador(this.currentUserEmail).subscribe({
+    if (this.isProgrammer() && this.currentProgrammerId) {
+      this.solicitudesService.getSolicitudesProgramador(this.currentProgrammerId).subscribe({
         next: (sols) => {
           this.solicitudesRecibidas.set(sols);
           this.loading.set(false);
@@ -101,7 +107,7 @@ export class Dashboard implements OnInit {
         error: () => this.loading.set(false)
       });
     } else if (this.currentUserUid) {
-      this.strapiService.getSolicitudesDeUsuario(this.currentUserUid).subscribe({
+      this.solicitudesService.getSolicitudesUsuario(this.currentUserUid).subscribe({
         next: (sols) => {
           this.solicitudesEnviadas.set(sols);
           this.loading.set(false);
@@ -119,26 +125,29 @@ export class Dashboard implements OnInit {
 
     const { programadorId, nombreSolicitante, descripcionProyecto } = this.solicitudForm.getRawValue();
 
+    const programadorSeleccionado = this.programmersList().find((prog) => prog.documentId === programadorId);
+
     const nuevaSol: Partial<Solicitud> = {
       uid: this.currentUserUid,
       correoUsuario: this.currentUserEmail,
       nombreSolicitante,
       correoSolicitante: this.currentUserEmail,
       descripcionProyecto,
-      programadorId
+      programadorId,
+      programadorNombre: programadorSeleccionado?.Full_name ?? ''
     };
 
-    this.strapiService.crearSolicitud(nuevaSol).subscribe({
+    this.solicitudesService.crearSolicitud(nuevaSol).subscribe({
       next: (created) => {
         this.solicitudesEnviadas.update(sols => [created, ...sols]);
         this.solicitudForm.reset({
           programadorId: '',
-          nombreSolicitante: this.authService.currentUser$ ? nombreSolicitante : '',
+          nombreSolicitante: this.currentUserName ?? nombreSolicitante,
           descripcionProyecto: ''
         });
       },
       error: (err) => {
-        console.error('Error al enviar la solicitud a Strapi', err);
+        console.error('Error al enviar la solicitud a Firestore', err);
       }
     });
   }
@@ -147,15 +156,18 @@ export class Dashboard implements OnInit {
   onResponder(solId: string, observacion: string) {
     if (!observacion.trim()) return;
 
-    this.strapiService.responderSolicitud(solId, observacion.toUpperCase()).subscribe({
+    this.solicitudesService.actualizarSolicitud(solId, {
+      estado: 'Respondida',
+      observacion: observacion.toUpperCase(),
+    }).subscribe({
       next: () => {
         // Actualizar localmente la solicitud en la lista recibida
-        this.solicitudesRecibidas.update(sols => 
+        this.solicitudesRecibidas.update(sols =>
           sols.map(s => s.id === solId ? { ...s, estado: 'Respondida', observacion: observacion.toUpperCase() } : s)
         );
       },
       error: (err) => {
-        console.error('Error al responder la solicitud en Strapi', err);
+        console.error('Error al responder la solicitud en Firestore', err);
       }
     });
   }
