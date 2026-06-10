@@ -6,6 +6,18 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./views/home/home').then((m) => m.Home),
   },
+  // ─── NUEVA RUTA: PROGRAMADORES ───
+  {
+    path: 'programadores',
+    loadComponent: () =>
+      import('./views/programadores/programadores').then((m) => m.Programadores),
+  },
+  // ─── NUEVA RUTA: PROYECTOS ───
+  {
+    path: 'proyectos',
+    loadComponent: () =>
+      import('./views/proyectos/proyectos').then((m) => m.Proyectos),
+  },
   {
     path: 'programador/:id',
     loadComponent: () =>

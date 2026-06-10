@@ -11,6 +11,11 @@
       <a routerLink="/" routerLinkActive="text-neon-cyan border-neon-cyan" [routerLinkActiveOptions]="{exact: true}"
          class="py-2 border-b-2 border-transparent text-gray-400 hover:text-white transition-all">INICIO</a>
 
+      <a routerLink="/programadores" routerLinkActive="text-neon-cyan border-neon-cyan"
+         class="py-2 border-b-2 border-transparent text-gray-400 hover:text-white transition-all">PROGRAMADORES</a>
+
+      <a routerLink="/proyectos" routerLinkActive="text-neon-cyan border-neon-cyan"
+         class="py-2 border-b-2 border-transparent text-gray-400 hover:text-white transition-all">PROYECTOS</a>
       @if (currentUser$ | async; as user) {
         <a routerLink="/solicitudes" routerLinkActive="text-neon-cyan" class="text-gray-400 hover:text-white">Solicitudes</a>
         
@@ -33,7 +38,7 @@
         </div>
       } @else {
         <a routerLink="/login" routerLinkActive="text-neon-cyan" class="px-5 py-2 border border-neon-cyan/30 rounded text-neon-cyan hover:bg-neon-cyan/10 text-xs uppercase">
-           Iniciar Sesión
+            Iniciar Sesión
         </a>
       }
     </nav>
